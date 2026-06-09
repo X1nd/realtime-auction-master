@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # MySQL 数据库
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: auction-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-auction_master}
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - auction-net
+
+  # ============================================
+  # Redis 缓存
+  # ============================================
+  redis:
+    image: redis:7.0-alpine
+    container_name: auction-redis
+    restart: always
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - auction-net
+
+  # ============================================
+  # Go 后端 (API :3000 + WebSocket :3001)
+  # ============================================
+  backend:
+    build:
+      context: ./backend-go
+      dockerfile: Dockerfile
+    container_name: auction-backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      SOCKET_PORT: 3001
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-auction_master}
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-168h}
+      UPLOAD_DIR: /app/uploads
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-10}
+      BID_QUEUE_BUFFER_SIZE: 2048
+      REDIS_POOL_SIZE: 100
+    volumes:
+      - uploads-data:/app/uploads
+    networks:
+      - auction-net
+
+  # ============================================
+  # Nginx（多阶段构建：前端 + 管理后台 + 反向代理）
+  # ============================================
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+      args:
+        VITE_API_URL: /api
+        VITE_WS_URL: /ws
+    container_name: auction-nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - auction-net
+
+volumes:
+  mysql-data:
+  redis-data:
+  uploads-data:
+
+networks:
+  auction-net:
+    driver: bridge

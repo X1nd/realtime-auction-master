@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Uploads
+uploads/
+backend-go/uploads/
+
+# Test coverage
+coverage/
+*.out
+
+# Docker volumes
+mysql-data/
+redis-data/
+
+# Temporary
+tmp/
+temp/
+
+# Demo & competition docs
+demo/
+抖音电商AI全栈挑战赛-成果演示DEMO.md
+🛍️抖音电商AI全栈课题-直播竞拍全栈系统（宣讲版）.md
+
+# Claude
+.claude/
+
+# Dev scripts
+hls_server.py

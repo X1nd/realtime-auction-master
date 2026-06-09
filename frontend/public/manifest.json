@@ -1,0 +1,17 @@
+{
+  "name": "实时竞拍大师",
+  "short_name": "实时竞拍",
+  "description": "直播竞拍，即刻出价",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

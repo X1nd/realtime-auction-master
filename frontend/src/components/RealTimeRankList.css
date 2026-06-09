@@ -1,0 +1,76 @@
+.rank-list-container {
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.rank-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px 0;
+}
+
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty-rank {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 40px 20px;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.rank-1 {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.rank-2 {
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), rgba(169, 169, 169, 0.08));
+  border: 1px solid rgba(192, 192, 192, 0.25);
+}
+
+.rank-3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), rgba(160, 82, 45, 0.08));
+  border: 1px solid rgba(205, 127, 50, 0.25);
+}
+
+.rank-number {
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: center;
+}
+
+.rank-user {
+  flex: 1;
+}
+
+.username {
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+}
+
+.rank-price {
+  text-align: right;
+}
+
+.price-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffd700;
+}
