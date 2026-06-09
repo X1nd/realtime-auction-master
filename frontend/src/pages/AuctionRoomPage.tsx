@@ -516,7 +516,7 @@ const AuctionRoomPage: React.FC = () => {
                           disabled={!isConnected || !canBid}
                           style={{ position: 'relative', zIndex: 1 }}
                         >
-                          {isMyTurn ? '👑领先中' : '立即出价'} + ¥{auctionData?.incrementPrice.toFixed(0) ?? '10'}
+                          {isMyTurn ? '👑领先中' : `立即出价 + ¥${auctionData?.incrementPrice.toFixed(0) ?? '10'}`}
                         </Button>
                         {showOutbid && (
                           <motion.div
