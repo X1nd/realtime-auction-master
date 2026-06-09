@@ -7,7 +7,7 @@ import wsClient from '../websocket/socketClient'
 import RealTimeRankList from '../components/RealTimeRankList'
 import VideoPlayer from '../components/VideoPlayer'
 import ChatArea from '../components/ChatArea'
-import CrownConfetti from '../components/CrownConfetti'
+import BidFirework from '../components/CrownConfetti'
 import { getDevToken, getToken, getAuctionSequence } from '../api'
 import { useAuctionSound } from '../hooks/useAuctionSound'
 import './AuctionRoomPage.css'
@@ -52,6 +52,7 @@ const AuctionRoomPage: React.FC = () => {
   } = useAuctionStore()
 
   const sound = useAuctionSound()
+  const finalStageRef = useRef(false)
 
   const currentAuctionName = upcomingItems.find(i => i.id === currentGoodsId)?.name
     || (goodsIdParam ? `竞拍 #${goodsIdParam}` : '直播间')
@@ -135,6 +136,7 @@ const AuctionRoomPage: React.FC = () => {
         if (res.data.accessToken) tryConnect(res.data.accessToken)
         if (res.data.userId) {
           useAuctionStore.getState().setMyUser(res.data.userId, res.data.username || `用户${res.data.userId}`, res.data.nickname)
+          sound.setMyUserId(res.data.userId)
         }
       } else {
         const cached = getToken()
@@ -331,6 +333,7 @@ const AuctionRoomPage: React.FC = () => {
   }
 
   const handleBid = () => {
+    if (isMyTurn) return
     if (!auctionData) return
     if (auctionData.currentState !== AuctionState.ONGOING && auctionData.currentState !== AuctionState.DELAYING) {
       Toast.show({ content: '竞拍未开始或已结束', icon: 'fail' })
@@ -349,6 +352,24 @@ const AuctionRoomPage: React.FC = () => {
   const isOngoing = auctionData?.currentState === AuctionState.ONGOING
   const countdownColor = displayRemainingMs <= 10000 ? '#ff4d4f' : isDelaying ? '#ff9800' : '#faad14'
   const canBid = isOngoing || isDelaying
+
+  // Final stage sound when countdown <= 10s
+  useEffect(() => {
+    if (!canBid || displayRemainingMs <= 0) {
+      sound.stopFinalStage()
+      finalStageRef.current = false
+      return
+    }
+    if (displayRemainingMs <= 10000 && !finalStageRef.current) {
+      finalStageRef.current = true
+      sound.startFinalStage()
+    }
+    if (displayRemainingMs > 10000 && finalStageRef.current) {
+      sound.stopFinalStage()
+      finalStageRef.current = false
+    }
+  }, [displayRemainingMs, canBid, sound])
+
   const userNames = useAuctionStore(s => s.userNames)
   const myUserId = useAuctionStore(s => s.myUserId)
   const isMyTurn = useAuctionStore(s => s.isMyTurn)
@@ -495,7 +516,7 @@ const AuctionRoomPage: React.FC = () => {
                           disabled={!isConnected || !canBid}
                           style={{ position: 'relative', zIndex: 1 }}
                         >
-                          {isMyTurn ? '领先中，继续出价' : '立即出价'} + ¥{auctionData?.incrementPrice.toFixed(0) ?? '10'}
+                          {isMyTurn ? '👑领先中' : '立即出价'} + ¥{auctionData?.incrementPrice.toFixed(0) ?? '10'}
                         </Button>
                         {showOutbid && (
                           <motion.div
@@ -508,7 +529,7 @@ const AuctionRoomPage: React.FC = () => {
                             }}
                           />
                         )}
-                        <CrownConfetti active={showCrown} compact onComplete={() => setShowCrown(false)} />
+                        <BidFirework active={showCrown} onComplete={() => setShowCrown(false)} />
                       </div>
                     </div>
                   )}

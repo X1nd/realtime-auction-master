@@ -66,7 +66,7 @@ func (b *BotBidder) runBot(goodsId int64, bot BotConfig, stop chan struct{}) {
 	rng := rand.New(rand.NewSource(time.Now().UnixNano() + bot.UserId))
 
 	// Stagger initial delay so bots don't all bid at once
-	initialDelay := time.Duration(rng.Intn(5000) + 3000) * time.Millisecond
+	initialDelay := time.Duration(rng.Intn(8000) + 5000) * time.Millisecond
 	select {
 	case <-stop:
 		return
@@ -74,8 +74,8 @@ func (b *BotBidder) runBot(goodsId int64, bot BotConfig, stop chan struct{}) {
 	}
 
 	for {
-		// Random interval between 5s and 10s
-		interval := time.Duration(5000+rng.Intn(5000)) * time.Millisecond
+		// Random interval between 15s and 35s
+		interval := time.Duration(15000+rng.Intn(20000)) * time.Millisecond
 		select {
 		case <-stop:
 			return
