@@ -403,6 +403,15 @@ const AuctionRoomPage: React.FC = () => {
                   animate={{ y: 0 }}
                   exit={{ y: '100%' }}
                   transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                  drag="y"
+                  dragConstraints={{ top: 0, bottom: 200 }}
+                  dragElastic={{ top: 0, bottom: 0.5 }}
+                  dragMomentum={false}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.y > 100 || info.velocity.y > 500) {
+                      setPopupOpen(false)
+                    }
+                  }}
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Drag handle */}

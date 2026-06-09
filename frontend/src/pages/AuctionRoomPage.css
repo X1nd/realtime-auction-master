@@ -598,3 +598,89 @@
     padding: 8px;
   }
 }
+
+/* ===== Narrow mobile (430×932 etc.) ===== */
+@media (max-width: 480px) {
+  .live-room-body {
+    flex-direction: column;
+  }
+
+  .live-video-panel {
+    flex: none;
+    height: 38vh;
+  }
+
+  .live-chat-panel {
+    flex: 1;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .chat-action-bar {
+    padding: 8px 12px 12px;
+  }
+
+  .circular-bid-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .circular-btn-icon {
+    font-size: 18px;
+  }
+
+  /* Popup — full-width native bottom sheet */
+  .product-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 60;
+  }
+
+  .product-popup-card {
+    border-radius: 20px 20px 0 0;
+    max-height: 68vh;
+    padding: 0 16px 20px;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+
+  .popup-handle {
+    padding: 14px 0 10px;
+    cursor: grab;
+  }
+
+  .popup-handle:active {
+    cursor: grabbing;
+  }
+
+  .popup-handle-bar {
+    width: 40px;
+    height: 5px;
+  }
+
+  .countdown-value {
+    font-size: 32px;
+  }
+
+  .price-number {
+    font-size: 36px;
+  }
+
+  .bid-button {
+    height: 48px !important;
+    font-size: 16px !important;
+  }
+
+  .popup-info-row {
+    margin-bottom: 10px;
+  }
+
+  .room-sequence-item {
+    padding: 6px 8px;
+  }
+
+  .seq-item-name {
+    font-size: 11px;
+  }
+}
