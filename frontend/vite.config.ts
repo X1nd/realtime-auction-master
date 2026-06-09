@@ -16,7 +16,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        // Don't strip /api — Go backend routes are under /api group
       },
       '/socket.io': {
         target: 'ws://localhost:3000',
