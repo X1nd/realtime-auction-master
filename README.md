@@ -111,3 +111,26 @@ npm run dev
 ✅ 毫秒级倒计时 + 价格跳动动效
 ✅ 金牌/银牌/铜牌实时排行榜入场动画
 ✅ 商家后台侧边栏 + 竞拍发布完整表单
+
+## 性能压测结果
+
+**测试环境**：Windows 11，Go 1.25，MySQL 8.0 + Redis 7.0 本地运行
+
+### 读取压测（100 并发 / 持续 30s）
+
+| 接口 | 吞吐量 | P50 | P95 | P99 |
+|------|--------|-----|-----|-----|
+| `GET /health` | 7,859 req/s | 3ms | 5ms | 6ms |
+| `GET /api/auctions/:id` | 6,138 req/s | 9ms | 16ms | 34ms |
+| `GET /api/auctions/sequence` | 4,558 req/s | 9ms | 42ms | 97ms |
+| `GET /api/auctions?pageSize=50` | 4,213 req/s | 13ms | 23ms | 45ms |
+| `GET /api/merchants/rooms` | 1,509 req/s | 58ms | 92ms | 112ms |
+
+### 高并发极限（1000 并发 / 持续 10s）
+
+| 接口 | 吞吐量 | P50 | P99 |
+|------|--------|-----|-----|
+| `GET /health` | 13,526 req/s | 59ms | 85ms |
+| `GET /api/auctions?pageSize=50` | 4,001 req/s | 216ms | 543ms |
+
+> 所有测试 0 失败。读性能受 MySQL 连接池和 Redis 命中率影响，`/merchants/rooms` 因多表 JOIN 查询耗时最长。
