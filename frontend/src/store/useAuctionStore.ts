@@ -144,7 +144,7 @@ export const useAuctionStore = create<AuctionStore>((set, get) => ({
   },
   setSequenceData: (ongoing, upcoming, ended) => set({
     sequenceList: [...(ongoing ? [ongoing] : []), ...upcoming, ...ended],
-    upcomingItems: upcoming,
+    upcomingItems: [...(ongoing ? [ongoing] : []), ...upcoming],
   }),
   setNextAuction: (id, startsInMs) => set({
     nextAuctionId: id,
